@@ -1,0 +1,26 @@
+INSERT INTO SPAWN VALUES(
+  1,
+  2,
+  23,
+  1,
+  MDSYS.SDO_GEOMETRY(
+    2001,
+    NULL,
+    MDSYS.SDO_POINT_TYPE(2,23,NULL),
+    NULL,
+    NULL
+  )
+);
+INSERT INTO SPAWN VALUES(
+  2,
+  18,
+  2,
+  2,
+  MDSYS.SDO_GEOMETRY(
+    2001,
+    NULL,
+    MDSYS.SDO_POINT_TYPE(2,23,NULL),
+    NULL,
+    NULL
+  )
+);

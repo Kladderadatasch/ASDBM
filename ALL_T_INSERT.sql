@@ -1,0 +1,66 @@
+INSERT INTO GROUND VALUES(
+  1,
+  'Rocky',
+  1.15
+);
+
+INSERT INTO STYPE VALUES(
+  1,
+  'Player_spawn',
+  1
+);
+INSERT INTO BOOTS VALUES(
+  1,
+  'Slime_boots',
+  0.9
+);
+INSERT INTO SCORE VALUES(
+  1,
+  'Tim',
+  15000,
+  500,
+  1
+);
+INSERT INTO PFIELDS VALUES(
+  1,
+  10,
+  10,
+  12,
+  12,
+  1,
+  1,
+  MDSYS.SDO_GEOMETRY(
+    2003,
+    NULL,
+    NULL,
+    MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,3),
+    MDSYS.SDO_ORDINATE_ARRAY(10,10,12,12)
+  )
+);
+INSERT INTO PATHS VALUES(
+  1,
+  11,
+  13,
+  11,
+  13,
+  MDSYS.SDO_GEOMETRY(
+    2003,
+    NULL,
+    NULL,
+    MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,3),
+    MDSYS.SDO_ORDINATE_ARRAY(11,11,13,13)
+  )
+);
+INSERT INTO SPAWN VALUES(
+  1,
+  11,
+  11,
+  1,
+  MDSYS.SDO_GEOMETRY(
+    2001,
+    NULL,
+    MDSYS.SDO_POINT_TYPE(11,11, NULL),
+    NULL,
+    NULL
+  )
+);
