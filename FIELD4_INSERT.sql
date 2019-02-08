@@ -1,0 +1,16 @@
+INSERT INTO PFIELDS VALUES(
+  4,
+  0,
+  10,
+  7,
+  14,
+  1,
+  1,
+  MDSYS.SDO_GEOMETRY(
+    2003,
+    NULL,
+    NULL,
+    MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,3),
+    MDSYS.SDO_ORDINATE_ARRAY(0,10,7,14)
+  )
+);
