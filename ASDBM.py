@@ -52,7 +52,7 @@ def dataHtml(fields = True, paths = False, maxXinput = 0, maxYinput = 0):
     if paths == True:
         c.execute("SELECT PATH_ID, STARTX, STARTY, ENDX, ENDY FROM S1893502.PATHS")
         listpath = []
-        dictpath = {'PathID':[],'StartX':[],'StartY':[],'EndX':[],'EndY':[], 'MaxCoordX':[],'MaxCoordY':[]}
+        dictpath = {'PathID':[],'StartX':[],'StartY':[],'EndX':[],'EndY':[], 'MaxCoordX':[],'MaxCoordY':[]. 'distance':[]}
         for row in c:
             listpath.append(row)
 
@@ -82,6 +82,35 @@ def dataHtml(fields = True, paths = False, maxXinput = 0, maxYinput = 0):
 
         return dictpath
 
+
+#####
+def dataHtmlsq(pathsSQ = True):
+    #Exactly one value of True must be passed into this function
+    with open('./db/dbpwd.txt','r') as file:
+        pwd = file.readline().replace('\n','')
+    conn = cx_Oracle.connect(pwd)
+    c = conn.cursor()
+
+    if pathssq == True:
+        c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM S1893502.PFIELDS")
+        listsq = []
+        dictsq = {'FieldID':[],'PathID':[],'Distance':[],'GroundID':[],'Groundmultiplier':[],'Score':[]}
+        for row in c:
+            listsq.append(row)
+
+#Appending
+        for row in range(len(listsq)):
+            dictsq['FieldID'].append(listsq[row][0])
+            dictsq['PathID'].append(listsq[row][1])
+            dictsq['Distance'].append(listsq[row][2])
+            dictsq['GroundID'].append(listsq[row][3])
+            dictsq['Groundmultiplier'].append(listsq[row][4])
+            dictsq['Score'].append(listsq[row][5])
+
+
+
+    return dictsq
+#####
 
 ########################################
 
