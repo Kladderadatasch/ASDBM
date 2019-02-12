@@ -4,7 +4,6 @@ import sys
 import json
 import cgi
 import cgitb
-
 import innerScripts as iScr
 
 cgitb.enable(format='text')
@@ -23,7 +22,7 @@ sys.stdout.write("\n")
 
 #Calls inner_score.py instance which writes and retrieves the scores
 #addHighScore also returns the current top 10
-scoretable = aScr.inner_score(inp)
+scoretable = iScr.inner_score(inp)
 scoretable.addHSretrieveRank()
 
 #Writes scoretable position to the jQuery response
@@ -32,3 +31,7 @@ sys.stdout.write("\n")
 
 #Close the jQuery connection
 sys.stdout.close()
+
+#file:///web/s1788901/public_html/cgi-bin/cgi.py?highScore=150&name=Peter
+
+cgi.test()
