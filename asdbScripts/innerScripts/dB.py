@@ -1,12 +1,14 @@
+#!/usr/bin/env python3
+
 from flask import Flask, request
 import cx_Oracle
 import json
 from flask import jsonify
 
-app = Flask(__name__)
+__all__ = ['DataBase']
 
 class DataBase():
-    
+
     #score needs to be passed in correctly
     def addHSretrieveRank(self, name, score):
         with open('./db/dbpwd.txt','r') as file:
@@ -26,9 +28,4 @@ class DataBase():
         c.execute(query,name=name,score=score)
         self.conn.commit()
 
-        return json.dumps(result)
-
-
-
-if __name__ == '__main__':
-    Test_Class.get()
+        return pos
