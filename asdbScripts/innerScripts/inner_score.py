@@ -46,3 +46,4 @@ class Scores(object):
     
     def __str__(self):
         return str(self._position)
+
