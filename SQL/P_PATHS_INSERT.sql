@@ -1,0 +1,114 @@
+INSERT INTO PSTART VALUES(
+  1,
+  1,
+  2,
+  23
+);
+INSERT INTO PSTART VALUES(
+  2,
+  2,
+  9,
+  23
+);
+INSERT INTO PSTART VALUES(
+  3,
+  3,
+  2,
+  23
+);
+INSERT INTO PSTART VALUES(
+  4,
+  4,
+  9,
+  23
+);
+INSERT INTO PSTART VALUES(
+  5,
+  5,
+  16,
+  22
+);
+INSERT INTO PSTART VALUES(
+  6,
+  6,
+  3,
+  18
+);
+INSERT INTO PSTART VALUES(
+  7,
+  7,
+  3,
+  18
+);
+INSERT INTO PSTART VALUES(
+  8,
+  8,
+  5,
+  12
+);
+INSERT INTO PSTART VALUES(
+  9,
+  9,
+  2,
+  11
+);
+INSERT INTO PSTART VALUES(
+  10,
+  10,
+  5,
+  12
+);
+INSERT INTO PSTART VALUES(
+  11,
+  11,
+  6,
+  7
+);
+INSERT INTO PSTART VALUES(
+  12,
+  12,
+  9,
+  8
+);
+INSERT INTO PSTART VALUES(
+  13,
+  13,
+  13,
+  12
+);
+INSERT INTO PSTART VALUES(
+  14,
+  14,
+  2,
+  5
+);
+INSERT INTO PSTART VALUES(
+  15,
+  15,
+  7,
+  1
+);
+INSERT INTO PSTART VALUES(
+  16,
+  16,
+  10,
+  4
+);
+INSERT INTO PSTART VALUES(
+  17,
+  17,
+  13,
+  7
+);
+INSERT INTO PSTART VALUES(
+  18,
+  18,
+  18,
+  10
+);
+INSERT INTO PSTART VALUES(
+  19,
+  19,
+  16,
+  4
+);

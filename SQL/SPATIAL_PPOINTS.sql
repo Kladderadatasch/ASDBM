@@ -1,0 +1,33 @@
+ALTER TABLE PSTART       -- check table name
+ADD(GEOM MDSYS.SDO_GEOMETRY);
+
+UPDATE PSTART SET GEOM =        -- check table name
+MDSYS.SDO_GEOMETRY(2001, NULL,
+MDSYS.SDO_POINT_TYPE(S_X,S_Y,NULL), -- check column names
+NULL,NULL);
+
+INSERT INTO USER_SDO_GEOM_METADATA
+VALUES (
+'PSTART',                          -- check table name
+'GEOM',
+MDSYS.SDO_DIM_ARRAY(
+MDSYS.SDO_DIM_ELEMENT('X', 0, 50, 0.005),
+MDSYS.SDO_DIM_ELEMENT('Y', 0, 50, 0.005)),
+NULL);
+
+ALTER TABLE PEND       -- check table name
+ADD(GEOM MDSYS.SDO_GEOMETRY);
+
+UPDATE PEND SET GEOM =        -- check table name
+MDSYS.SDO_GEOMETRY(2001, NULL,
+MDSYS.SDO_POINT_TYPE(S_X,S_Y,NULL), -- check column names
+NULL,NULL);
+
+INSERT INTO USER_SDO_GEOM_METADATA
+VALUES (
+'PEND',                          -- check table name
+'GEOM',
+MDSYS.SDO_DIM_ARRAY(
+MDSYS.SDO_DIM_ELEMENT('X', 0, 50, 0.005),
+MDSYS.SDO_DIM_ELEMENT('Y', 0, 50, 0.005)),
+NULL);
