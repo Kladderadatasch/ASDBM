@@ -52,7 +52,7 @@ def dataHtml(fields = True, paths = False, maxXinput = 0, maxYinput = 0):
     if paths == True:
         c.execute("SELECT PATH_ID, STARTX, STARTY, ENDX, ENDY FROM S1893502.PATHS")
         listpath = []
-        dictpath = {'PathID':[],'StartX':[],'StartY':[],'EndX':[],'EndY':[], 'MaxCoordX':[],'MaxCoordY':[]. 'distance':[]}
+        dictpath = {'PathID':[],'StartX':[],'StartY':[],'EndX':[],'EndY':[], 'MaxCoordX':[],'MaxCoordY':[], 'Distance':[]}
         for row in c:
             listpath.append(row)
 
@@ -159,16 +159,11 @@ def print_html():
 fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
 
 
-    print('''</style>\n''')
-    print('''<script>function loadDoc() {\n\
-  var xhttp = new XMLHttpRequest();\n\
-  xhttp.onreadystatechange = function() {\n\
-    if (this.readyState == 4 && this.status == 200) {\n\
-     document.getElementById("demo").innerHTML = this.responseText;\n\
-    }\
-  };\
-  xhttp.open("GET", "ajax_info.txt", true);\
-  xhttp.send();}</script></head>\n<body>''')
+    print('''</style>\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n\
+<script src="../counter.js"></script>\n\
+<script src="jQuery.js"></script>\n\
+</head>\n<body>''')
+
 
     print('''<svg viewBox="-5 -4 110 110" >\n\
 <g class="grid">''')
@@ -214,6 +209,7 @@ fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
             break
 
     print('''</g>''')
+
     '''Path Computing'''
     print('''<g class="paths">''')
     i = -1
@@ -254,11 +250,58 @@ fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
 '''+str(highX)+''' '''+str(highY)+''', '''+str(lowX)+''' '''+str(highY)+'''" class="fields" id="r'''+str(row)+'''" />''')
     print('''</g>\n''')
 
+    '''Waypoint Computing'''
+    print('''<g class="Waypoints">''')
+    print('''<circle cx="'''+str(paths['EndX'][1])+'''" cy="'''+str(paths['EndY'][1])+'''" r="3" stroke="black" stroke-width="1" fill="red" id="counter_test" />''')
+    print('''</g>''')
+
     # print('''<g class = "AJAX"><text id="demo" class="field_id_text x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" onclick="loadDoc()">Test</text></g>\n''')
 
     print('''<text id="demo" x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" class="field_id_text" onclick="loadDoc()">Test</text>''' )
 
-    print('''</svg></body>\n</html>''')
+    print('''</svg>''')
+
+    print('''<script>\n\
+//insert Event Listener for Classes
+//if Statements in this function
+
+      var totalScore = 100; \n\
+      var scoreLine0 = -15; \n\
+      var scoreLine1 = -20; \n\
+      var scoreLine2 = -30; \n\
+
+      var pointReference0 = scoreLine0,scoreLine1; \n\
+      var pointReference1 = scoreLine1,scoreLine2; \n\
+      var pointReference2 = scoreLine1,scoreLine3; \n\
+
+      var fromCounter = pointReference0; \n\
+      var toCounter = null; \n\
+
+      function clickCounter () { \n\
+        // set onlick the clicked pointReference as \n\
+        // toCounter if the point is connected \n\
+        // by a line from the fromCounter \n\
+      } \n\
+
+      if (fromCounter == pointReference0 && toCounter == pointReference1) \n\
+        totalScore = totalScore + scoreLine0 + scoreLine1; \n\
+        return totalScore \n\
+
+    }); \n\
+</script>''')
+
+    print('''<script>function loadDoc() {\n\
+  var xhttp = new XMLHttpRequest();\n\
+  xhttp.onreadystatechange = function() {\n\
+    if (this.readyState == 4 && this.status == 200) {\n\
+     document.getElementById("demo").innerHTML = this.responseText;\n\
+    }\
+  };\
+  xhttp.open("GET", "ajax_info.txt", true);\
+  xhttp.send();}</script></body>\n</html>''')
+
+
+
 
     print(temp.render())
 
