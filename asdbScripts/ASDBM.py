@@ -252,53 +252,66 @@ fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
 
     '''Waypoint Computing'''
     print('''<g class="Waypoints">''')
-    print('''<circle cx="'''+str(paths['EndX'][1])+'''" cy="'''+str(paths['EndY'][1])+'''" r="3" stroke="black" stroke-width="1" fill="red" id="counter_test" />''')
+    print('''<circle cx="'''+str(paths['EndX'][1])+'''" \
+cy="'''+str(paths['EndY'][1])+'''" r="1.5" stroke="black" \
+stroke-width="0.5" fill="red" id="waypoint1" class="counter_test" />''')
     print('''</g>''')
 
-    # print('''<g class = "AJAX"><text id="demo" class="field_id_text x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" onclick="loadDoc()">Test</text></g>\n''')
+    #print('''<g class = "AJAX"><text id="demo" class="field_id_text x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" onclick="loadDoc()">Test</text></g>\n''')
 
-    print('''<text id="demo" x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" class="field_id_text" onclick="loadDoc()">Test</text>''' )
+    #print('''<text id="demo" x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" class="field_id_text" onclick="loadDoc()">Test</text>''' )
 
     print('''</svg>''')
 
-    print('''<script>\n\
-//insert Event Listener for Classes
-//if Statements in this function
+    print('''\n\
+<script>
+//insert Event Listener for Classes \n\
+//if Statements in this function \n\
 
-      var totalScore = 100; \n\
-      var scoreLine0 = -15; \n\
-      var scoreLine1 = -20; \n\
-      var scoreLine2 = -30; \n\
+      var totalScore = 100;
+      var scoreLine0 = -15;
+      var scoreLine1 = -20;
+      var scoreLine2 = -30;
+      var scoreLine3 = -28;
+      // var testScore = totalScore + scoreLine0
 
-      var pointReference0 = scoreLine0,scoreLine1; \n\
-      var pointReference1 = scoreLine1,scoreLine2; \n\
-      var pointReference2 = scoreLine1,scoreLine3; \n\
+      var pointReference0 = [document.getElementById("waypoint0"),scoreLine0,scoreLine1];
+      var pointReference1 = [document.getElementById("waypoint1"),scoreLine1,scoreLine2];
+      var pointReference2 = [document.getElementById("waypoint2"),scoreLine1,scoreLine3];
 
-      var fromCounter = pointReference0; \n\
-      var toCounter = null; \n\
+      var fromCounter = pointReference0;
+      var toCounter = null;
 
-      function clickCounter () { \n\
+      function clickCounter() {
         // set onlick the clicked pointReference as \n\
         // toCounter if the point is connected \n\
         // by a line from the fromCounter \n\
-      } \n\
 
-      if (fromCounter == pointReference0 && toCounter == pointReference1) \n\
-        totalScore = totalScore + scoreLine0 + scoreLine1; \n\
-        return totalScore \n\
+        // also how to resctrict the paths where it's possible to go ---- && !()
 
-    }); \n\
-</script>''')
+        if((this.id == "waypoint1") && !(fromCounter == pointReference1)){
+            var toCounter = pointReference1;
+            if ((fromCounter == pointReference0) && (toCounter == pointReference1)){
+                totalScore = totalScore + scoreLine0 + scoreLine1;
+                alert(totalScore);
+            }
+        }
+      }
 
-    print('''<script>function loadDoc() {\n\
-  var xhttp = new XMLHttpRequest();\n\
-  xhttp.onreadystatechange = function() {\n\
-    if (this.readyState == 4 && this.status == 200) {\n\
-     document.getElementById("demo").innerHTML = this.responseText;\n\
-    }\
-  };\
-  xhttp.open("GET", "ajax_info.txt", true);\
-  xhttp.send();}</script></body>\n</html>''')
+      $("circle.counter_test").click(clickCounter);
+
+</script></body>\n</html>''')
+
+    # print('''function loadDoc() {\n\
+    # var xhttp = new XMLHttpRequest();\n\
+    # xhttp.onreadystatechange = function() {\n\
+    # if (this.readyState == 4 && this.status == 200) {\n\
+    #  document.getElementById("demo").innerHTML = this.responseText;\n\
+    # }\
+    # };\
+    #
+    # xhttp.open("GET", "ajax_info.txt", true);\
+    # xhttp.send();}</script></body>\n</html>''')
 
 
 

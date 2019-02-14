@@ -1,0 +1,130 @@
+body {
+height: 100%;
+max-height: 100%;
+background:#eee;
+margin:0 }
+
+svg {
+display:block;
+border:1px
+solid #ccc;
+position:relative;
+top:5%;
+left:5%;
+width:90%;
+height:100%;
+background:#fff;}
+
+.line {stroke:rgb(0,0,0);
+stroke-width: 0.2px;}
+
+.text {font-size:12;
+}
+
+.fields {
+stroke-width: 7;
+opacity: 0.45;
+}
+
+.paths {
+  stroke:rgb(0,0,20);
+  stroke-width: 1px;
+}
+
+.counter_test{
+  opacity: 0.6;
+}
+.counter_test:hover{
+  cursor:grab;
+}
+
+.fields:hover {
+    opacity: 0.95;
+    cursor: pointer;
+}
+
+.finds {
+  fill: gold;
+  opacity: 0.8;
+  stroke-width: 0.2;
+  stroke-opacity: 0.4;
+  stroke:black;
+}
+
+.finds:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.legendtext {
+  font-family: Josefin Sans, sans-serif;
+  font-size: 2px;
+  stroke-opacity: 0.6;
+  stroke-width: 0;
+  stroke: #000;
+  fill: #000000;
+  fill-opacity: 0.7;
+}
+.field_ids {
+  fill: white;
+  fill-opacity: 1;
+  stroke: black;
+  stroke-width: 0.2;
+  stroke-opacity: 0.7;
+}
+.field_id_text {
+  font-family: Josefin Sans, sans-serif;
+  font-size: 3px;
+  stroke-opacity: 0.8;
+  stroke-width: 0;
+  stroke: #000;
+  fill: #000000;
+  fill-opacity: 0.9;
+}
+
+
+.desctext {
+  text-align: center;
+	font-family: 'Playfair Display', serif;
+	font-weight: 400;
+	text-transform: uppercase;
+	color: #3A4945;
+	padding: 0 0 0.125em;
+  opacity: 0.6;
+}
+
+.header {
+  font-size: 1.5em;
+}
+
+.content {
+  font-size: 1em;
+}
+
+.desctext:hover{
+  opacity: 1;
+
+}
+
+#outerrect {
+  fill: #A9A9A9;
+  fill-opacity: 0.95;
+  stroke: black;
+  stroke-width: 0.2;
+  stroke-opacity: 0.4;
+}
+
+#innerrect {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.2;
+  stroke-opacity: 0.4;
+
+}
+
+#circle {
+  fill: gold;
+  stroke: black;
+  stroke-width: 0.2;
+  stroke-opacity: 0.4;
+}
