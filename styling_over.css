@@ -1,0 +1,29 @@
+body { background:#eee;
+margin:0 }
+
+svg {
+display:block;
+border:1px
+solid #ccc;
+position:relative;
+top:5%;
+left:5%;
+width:90%;
+height:90%;
+background:#fff;}
+
+.line {stroke:rgb(0,0,0);
+stroke-width: 0.2px;}
+
+.text {font-size:12;
+}
+
+.fields {
+stroke-width: 7;
+opacity: 0.5;
+}
+
+.fields:hover {
+    opacity: 0.95;
+    cursor: pointer;
+}
