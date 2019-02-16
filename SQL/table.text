@@ -1,0 +1,264 @@
+SQL> SELECT * FROM PEND ORDER BY POINT_ID;
+
+  POINT_ID    PATH_ID        S_X        S_Y GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_ELEM_INFO, SDO_ORDINATES)                               
+---------- ---------- ---------- ---------- --------------------------------------------------------------------------------                          
+         1          1          9         23 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(9, 23, NULL), NULL, NULL)                                         
+         2          2         16         22 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(16, 22, NULL), NULL, NULL)                                        
+         3          3          3         18 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(3, 18, NULL), NULL, NULL)                                         
+         4          4         13         12 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(13, 12, NULL), NULL, NULL)                                        
+         5          5         18         10 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(18, 10, NULL), NULL, NULL)                                        
+         6          6          2         11 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(2, 11, NULL), NULL, NULL)                                         
+         7          7          5         12 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(5, 12, NULL), NULL, NULL)                                         
+         9          9          2          5 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(2, 5, NULL), NULL, NULL)                                          
+        10         10          6          7 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(6, 7, NULL), NULL, NULL)                                          
+        11         11          9          8 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(9, 8, NULL), NULL, NULL)                                          
+        12         12         10          4 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(10, 4, NULL), NULL, NULL)                                         
+        13         13         13          7 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(13, 7, NULL), NULL, NULL)                                         
+        14         14          7          1 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(7, 1, NULL), NULL, NULL)                                          
+        17         17         16          4 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(16, 4, NULL), NULL, NULL)                                         
+        19         19         18          2 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(18, 2, NULL), NULL, NULL)                                         
+        20          2          2         23 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(2, 23, NULL), NULL, NULL)                                         
+
+16 rows selected.
+
+SQL> SELECT * FROM PATHS ORDER BY PATH_ID;
+
+   PATH_ID     STARTX     STARTY       ENDX       ENDY GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_ELEM_INFO, SDO_ORDINATES)                    
+---------- ---------- ---------- ---------- ---------- --------------------------------------------------------------------------------               
+         1          2         23          9         23 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 23, 9, 23))                                                                                 
+                                                                                                                                                      
+         2          9         23         16         22 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       9, 23, 16, 22))                                                                                
+                                                                                                                                                      
+         3          2         23          3         18 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 23, 3, 18))                                                                                 
+                                                                                                                                                      
+         4          9         23         13         12 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       9, 23, 13, 12))                                                                                
+                                                                                                                                                      
+         5         16         22         18         10 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       16, 22, 18, 10))                                                                               
+                                                                                                                                                      
+         6          3         18          2         11 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       3, 18, 2, 11))                                                                                 
+                                                                                                                                                      
+         7          3         18          5         12 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       3, 18, 5, 12))                                                                                 
+                                                                                                                                                      
+         8          5         12         13         12 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       5, 12, 13, 12))                                                                                
+                                                                                                                                                      
+         9          2         11          2          5 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 11, 2, 5))                                                                                  
+                                                                                                                                                      
+        10          5         12          6          7 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       5, 12, 6, 7))                                                                                  
+                                                                                                                                                      
+        11          6          7          9          8 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       6, 7, 9, 8))                                                                                   
+                                                                                                                                                      
+        12          9          8         10          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       9, 8, 10, 4))                                                                                  
+                                                                                                                                                      
+        13         13         12         13          7 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       13, 12, 13, 7))                                                                                
+                                                                                                                                                      
+        14          2          5          7          1 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 5, 7, 1))                                                                                   
+                                                                                                                                                      
+        15          7          1         10          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       7, 1, 10, 4))                                                                                  
+                                                                                                                                                      
+        16         10          4         18          2 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       10, 4, 18, 2))                                                                                 
+
+   PATH_ID     STARTX     STARTY       ENDX       ENDY GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_ELEM_INFO, SDO_ORDINATES)                    
+---------- ---------- ---------- ---------- ---------- --------------------------------------------------------------------------------               
+                                                                                                                                                      
+        17         13          7         16          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       13, 7, 16, 4))                                                                                 
+                                                                                                                                                      
+        18         18         10         16          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       18, 10, 16, 4))                                                                                
+                                                                                                                                                      
+        19         16          4         18          2 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       16, 4, 18, 2))                                                                                 
+                                                                                                                                                      
+
+19 rows selected.
+
+SQL> SET PAGESIZE 100
+SQL> SELECT * FROM PATHS ORDER BY PATH_ID;
+
+   PATH_ID     STARTX     STARTY       ENDX       ENDY GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_ELEM_INFO, SDO_ORDINATES)                    
+---------- ---------- ---------- ---------- ---------- --------------------------------------------------------------------------------               
+         1          2         23          9         23 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 23, 9, 23))                                                                                 
+                                                                                                                                                      
+         2          9         23         16         22 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       9, 23, 16, 22))                                                                                
+                                                                                                                                                      
+         3          2         23          3         18 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 23, 3, 18))                                                                                 
+                                                                                                                                                      
+         4          9         23         13         12 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       9, 23, 13, 12))                                                                                
+                                                                                                                                                      
+         5         16         22         18         10 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       16, 22, 18, 10))                                                                               
+                                                                                                                                                      
+         6          3         18          2         11 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       3, 18, 2, 11))                                                                                 
+                                                                                                                                                      
+         7          3         18          5         12 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       3, 18, 5, 12))                                                                                 
+                                                                                                                                                      
+         8          5         12         13         12 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       5, 12, 13, 12))                                                                                
+                                                                                                                                                      
+         9          2         11          2          5 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 11, 2, 5))                                                                                  
+                                                                                                                                                      
+        10          5         12          6          7 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       5, 12, 6, 7))                                                                                  
+                                                                                                                                                      
+        11          6          7          9          8 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       6, 7, 9, 8))                                                                                   
+                                                                                                                                                      
+        12          9          8         10          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       9, 8, 10, 4))                                                                                  
+                                                                                                                                                      
+        13         13         12         13          7 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       13, 12, 13, 7))                                                                                
+                                                                                                                                                      
+        14          2          5          7          1 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       2, 5, 7, 1))                                                                                   
+                                                                                                                                                      
+        15          7          1         10          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       7, 1, 10, 4))                                                                                  
+                                                                                                                                                      
+        16         10          4         18          2 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       10, 4, 18, 2))                                                                                 
+                                                                                                                                                      
+        17         13          7         16          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       13, 7, 16, 4))                                                                                 
+                                                                                                                                                      
+        18         18         10         16          4 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       18, 10, 16, 4))                                                                                
+                                                                                                                                                      
+        19         16          4         18          2 SDO_GEOMETRY(2002, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 2, 1), SDO_ORDINATE_ARRAY(               
+                                                       16, 4, 18, 2))                                                                                 
+                                                                                                                                                      
+
+19 rows selected.
+
+SQL> SELECT * FROM PFIELDS ORDER BY FIELDS_ID;
+SELECT * FROM PFIELDS ORDER BY FIELDS_ID
+                               *
+ERROR at line 1:
+ORA-00904: "FIELDS_ID": invalid identifier 
+
+
+SQL> SELECT * FROM PFIELDS ORDER BY FIELD_ID;
+
+  FIELD_ID       LOWX       LOWY        HIX        HIY        MAP  GROUND_ID                                                                          
+---------- ---------- ---------- ---------- ---------- ---------- ----------                                                                          
+GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_ELEM_INFO, SDO_ORDINATES)                                                                           
+--------------------------------------------------------------------------------                                                                      
+         1          0         21         10         25          1          1                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(0, 21, 10, 25))                                                                                                                                    
+                                                                                                                                                      
+         2          0         16          5         21          1          2                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(0, 16, 5, 21))                                                                                                                                     
+                                                                                                                                                      
+         3          0         14          5         16          1          1                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(0, 14, 5, 16))                                                                                                                                     
+                                                                                                                                                      
+         4          0         10          7         14          1          1                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(0, 10, 7, 14))                                                                                                                                     
+                                                                                                                                                      
+         5          0          0          3         10          1          3                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(0, 0, 3, 10))                                                                                                                                      
+                                                                                                                                                      
+         6         10         21         20         25          1          2                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(10, 21, 20, 25))                                                                                                                                   
+                                                                                                                                                      
+         7          5         14         15         21          1          2                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(5, 14, 15, 21))                                                                                                                                    
+                                                                                                                                                      
+         8          3          6          7         10          1          3                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(3, 6, 7, 10))                                                                                                                                      
+                                                                                                                                                      
+         9          7          6         15         14          1          1                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(7, 6, 15, 14))                                                                                                                                     
+                                                                                                                                                      
+        10          3          0         11          6          1          2                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(3, 0, 11, 6))                                                                                                                                      
+                                                                                                                                                      
+        11         11          0         20          6          1          2                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(11, 0, 20, 6))                                                                                                                                     
+                                                                                                                                                      
+        12         15          6         20         21          1          1                                                                          
+SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), SDO_ORDINATE_ARR                                                                      
+AY(15, 6, 20, 21))                                                                                                                                    
+                                                                                                                                                      
+
+12 rows selected.
+
+SQL> COLUMN GEOM FORMAT A50
+SQL> SELECT * FROM PFIELDS ORDER BY FIELD_ID;
+
+  FIELD_ID       LOWX       LOWY        HIX        HIY        MAP  GROUND_ID GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_                       
+---------- ---------- ---------- ---------- ---------- ---------- ---------- --------------------------------------------------                       
+         1          0         21         10         25          1          1 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(0, 21, 10, 25))                         
+                                                                                                                                                      
+         2          0         16          5         21          1          2 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(0, 16, 5, 21))                          
+                                                                                                                                                      
+         3          0         14          5         16          1          1 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(0, 14, 5, 16))                          
+                                                                                                                                                      
+         4          0         10          7         14          1          1 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(0, 10, 7, 14))                          
+                                                                                                                                                      
+         5          0          0          3         10          1          3 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(0, 0, 3, 10))                           
+                                                                                                                                                      
+         6         10         21         20         25          1          2 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(10, 21, 20, 25))                        
+                                                                                                                                                      
+         7          5         14         15         21          1          2 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(5, 14, 15, 21))                         
+                                                                                                                                                      
+         8          3          6          7         10          1          3 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(3, 6, 7, 10))                           
+                                                                                                                                                      
+         9          7          6         15         14          1          1 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(7, 6, 15, 14))                          
+                                                                                                                                                      
+        10          3          0         11          6          1          2 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(3, 0, 11, 6))                           
+                                                                                                                                                      
+        11         11          0         20          6          1          2 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(11, 0, 20, 6))                          
+                                                                                                                                                      
+        12         15          6         20         21          1          1 SDO_GEOMETRY(2003, NULL, NULL, SDO_ELEM_INFO_ARRAY                       
+                                                                             (1, 1003, 3), SDO_ORDINATE_ARRAY(15, 6, 20, 21))                         
+                                                                                                                                                      
+
+12 rows selected.
+
+SQL> SPOOL OFF
