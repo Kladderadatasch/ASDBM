@@ -7,7 +7,7 @@ import pandas as pd
 from pandas import DataFrame as df
 
 #Connection
-def dataHtml(fields = True, paths = False, waypoints=False, score = False, maxXinput = 0, maxYinput = 0):
+def dataHtml(fields = False, paths = False, waypointcoords=False, waypointrefs=False, score = False,  maxXinput = 0, maxYinput = 0):
     #Exactly one value of True must be passed into this function
     with open('./db/dbpwd.txt','r') as file:
         pwd = file.readline().replace('\n','')
@@ -87,38 +87,29 @@ def dataHtml(fields = True, paths = False, waypoints=False, score = False, maxXi
 ##############################################################################
 ###############################################################################
 
-    if waypoints == True:
+    if waypointcoords == True:
         c.execute('''
-SELECT A.PATH_ID, B.POINT_ID AS "START_POINT_ID",
-C.POINT_ID AS "END_POINT_ID", B.S_X, B.S_Y, C.S_X AS "E_X", C.S_Y AS "E_Y"
-FROM PATHS A, PSTART B, PEND C WHERE A.PATH_ID = B.PATH_ID AND
-A.PATH_ID = C.PATH_ID ORDER BY A.PATH_ID
+SELECT POINT_ID, S_X, S_Y FROM PEND
 ''')
         listpoint = []
-        dictpoint = {'PathID':[],'StartPointID':[],'EndPointID':[], 'StartX':[],'StartY':[],'EndX':[],'EndY':[]}
+        dictpoint = {'PointID':[],'X':[],'Y':[]}
         for row in c:
             listpoint.append(row)
 
 #Appending
         for row in range(len(listpoint)):
-            dictpoint['PathID'].append(listpoint[row][0])
-            dictpoint['StartPointID'].append(listpoint[row][1])
-            dictpoint['EndPointID'].append(listpoint[row][2])
-            dictpoint['StartX'].append(listpoint[row][3])
-            dictpoint['StartY'].append(listpoint[row][4])
-            dictpoint['EndX'].append(listpoint[row][5])
-            dictpoint['EndY'].append(listpoint[row][6])
-
+            dictpoint['PointID'].append(listpoint[row][0])
+            dictpoint['X'].append(listpoint[row][1])
+            dictpoint['Y'].append(listpoint[row][2])
+            
     #Relativating Coordinates
     #This could be a big problem with the maximum and relativeness
         maxX = maxXinput
         maxY = maxYinput
 
         for row in range(len(listpoint)):
-            dictpoint['StartX'][row]= ((dictpoint['StartX'][row]/maxX))*100
-            dictpoint['StartY'][row]= (1-(dictpoint['StartY'][row]/maxY))*100
-            dictpoint['EndX'][row]= ((dictpoint['EndX'][row]/maxX))*100
-            dictpoint['EndY'][row]= (1-(dictpoint['EndY'][row]/maxY))*100
+            dictpoint['X'][row]= ((dictpoint['X'][row]/maxX))*100
+            dictpoint['Y'][row]= (1-(dictpoint['Y'][row]/maxY))*100
 
         return dictpoint
 
@@ -126,6 +117,31 @@ A.PATH_ID = C.PATH_ID ORDER BY A.PATH_ID
 #############################################################################
 ##############################################################################
 
+    if waypointrefs == True:
+        c.execute('''
+SELECT C.PATH_ID, D.POINT_ID, E.POINT_ID
+FROM PATHS C, PEND D, PEND E
+WHERE SDO_TOUCH(C.GEOM, D.GEOM) = 'TRUE' AND SDO_TOUCH(C.GEOM, E.GEOM) = 'TRUE'
+AND D.POINT_ID < E.POINT_ID
+ORDER BY C.PATH_ID              
+''')
+        listpoint = []
+        dictref = {'PathID':[],'PointID1':[],'PointID2':[]}
+        for row in c:
+            listpoint.append(row)
+
+#Appending
+        for row in range(len(listpoint)):
+            dictref['PathID'].append(listpoint[row][0])
+            dictref['PointID1'].append(listpoint[row][1])
+            dictref['PointID2'].append(listpoint[row][2])
+        
+        return dictref
+        
+        
+##############################################################################
+#############################################################################
+##############################################################################
 
     if score == True:
         c.execute('''SELECT A.PATH_ID, C.FIELD_ID, SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) \
@@ -190,10 +206,11 @@ def dataHtmlsq(pathsSQ = True):
 def print_html():
     env = Environment(loader = FileSystemLoader('../'))
     temp = env.get_template('SVG.html')
-    maxXfields, maxYfields, fields = dataHtml(fields = True, paths = False,score = False, waypoints = False)
-    paths = dataHtml(fields = False, paths = True, waypoints = False,score = False, maxXinput = maxXfields, maxYinput = maxYfields)
-    points= dataHtml(fields = False, paths = False, waypoints = True,score = False, maxXinput = maxXfields, maxYinput = maxYfields)
-    scoredic = dataHtml(fields = False, paths = False, waypoints = False,score = True, maxXinput = maxXfields, maxYinput = maxYfields)
+    maxXfields, maxYfields, fields = dataHtml(fields = True)
+    paths = dataHtml(paths = True, maxXinput = maxXfields, maxYinput = maxYfields)
+    points= dataHtml(waypointcoords = True, maxXinput = maxXfields, maxYinput = maxYfields)
+    pointref = dataHtml(waypointrefs=True)
+    scoredic = dataHtml(score = True, maxXinput = maxXfields, maxYinput = maxYfields)
 
     print('''Content-Type: text/html\n\n\
 <!DOCTYPE html>\n\
@@ -232,10 +249,10 @@ def print_html():
         print('''#r'''+str(row)+''' {
 fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
 
+#<script src="../counter.js"></script>\n\
+#<script src="jQuery.js"></script>\n\
 
     print('''</style>\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n\
-<script src="../counter.js"></script>\n\
-<script src="jQuery.js"></script>\n\
 </head>\n<body>''')
 
 
@@ -327,15 +344,11 @@ fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
     '''Waypoint Computing'''
     print('''<g class="Waypoints">''')
 
-    for row in range(len(points['PathID'])):
+    for row in range(len(points['PointID'])):
 
-        print('''<circle cx="'''+str(points['StartX'][row])+'''" \
-cy="'''+str(points['StartY'][row])+'''" r="1.5" stroke="black" \
-stroke-width="0.5" fill="red" id="waypoint_start_'''+str(row)+'''" class="waypoint" />''')
-
-        print('''<circle cx="'''+str(points['EndX'][row])+'''" \
-cy="'''+str(points['EndY'][row])+'''" r="1.5" stroke="black" \
-stroke-width="0.5" fill="red" id="waypoint_end_'''+str(row)+'''" class="waypoint" />''')
+        print('''<circle cx="'''+str(points['X'][row])+'''" \
+cy="'''+str(points['Y'][row])+'''" r="1.5" stroke="black" \
+stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint" />''')
 
     print('''</g>''')
 
@@ -358,10 +371,8 @@ stroke-width="0.5" fill="red" id="waypoint_end_'''+str(row)+'''" class="waypoint
       
 
     print('''
-    
-      var pointReference0 = ;
-      
-      var fromCounter = "waypoint0";
+     
+      var fromCounter = "waypoint16";
       var toCounter = null;
        
         // set onlick the clicked pointReference as \n\
@@ -371,20 +382,218 @@ stroke-width="0.5" fill="red" id="waypoint_end_'''+str(row)+'''" class="waypoint
         //
       function clickCounter() {
 
-        if(((this.id == "waypoint1")||(this.id == "waypoint2")) && (fromCounter == "waypoint0")){
-            var toCounter = this.id;
-            
-            //if(this.id == "waypoint1"){
-            //totalScore = totalScore + scoreLine1;
-            //}
-            
-           // if(this.id == "waypoint2"){
-            //totalScore = totalScore + scoreLine2
-            //}           
+        if(((this.id == "waypoint2")||(this.id == "waypoint4")||(this.id == "waypoint16")) && (fromCounter == "waypoint1")){
+        //PointID2 20 - last one
+            toCounter = this.id;
+            if((toCounter == "waypoint2")){
+            totalScore = totalScore + scoreLine2;
             }
-         alert(totalScore);
+            if((toCounter == "waypoint4")){
+            totalScore = totalScore + scoreLine4;
+            }
+            if((toCounter == "waypoint16")){
+            totalScore = totalScore + scoreLine1;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
         }
-      
+        if(((this.id == "waypoint5")||(this.id == "waypoint1")) && (fromCounter == "waypoint2")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint5")){
+            totalScore = totalScore + scoreLine5;
+            }
+            if((toCounter == "waypoint1")){
+            totalScore = totalScore + scoreLine2;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint6")||(this.id == "waypoint7")||(this.id == "waypoint16")) && (fromCounter == "waypoint3")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint6")){
+            totalScore = totalScore + scoreLine5;
+            }
+            if((toCounter == "waypoint7")){
+            totalScore = totalScore + scoreLine2;
+            }
+            if((toCounter == "waypoint16")){
+            totalScore = totalScore + scoreLine2;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint7")||(this.id == "waypoint11")||(this.id == "waypoint1")) && (fromCounter == "waypoint4")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint7")){
+            totalScore = totalScore + scoreLine8;
+            }
+            if((toCounter == "waypoint11")){
+            totalScore = totalScore + scoreLine13;
+            }
+            if((toCounter == "waypoint1")){
+            totalScore = totalScore + scoreLine4;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint13")||(this.id == "waypoint2")) && (fromCounter == "waypoint5")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint13")){
+            totalScore = totalScore + scoreLine18;
+            }
+            if((toCounter == "waypoint2")){
+            totalScore = totalScore + scoreLine5;
+            }
+
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint8")||(this.id == "waypoint3")) && (fromCounter == "waypoint6")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint8")){
+            totalScore = totalScore + scoreLine9;
+            }
+            if((toCounter == "waypoint3")){
+            totalScore = totalScore + scoreLine6;
+            }
+
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint9")||(this.id == "waypoint3")||(this.id == "waypoint4")) && (fromCounter == "waypoint7")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint9")){
+            totalScore = totalScore + scoreLine10;
+            }
+            if((toCounter == "waypoint3")){
+            totalScore = totalScore + scoreLine7;
+            }
+            if((toCounter == "waypoint4")){
+            totalScore = totalScore + scoreLine8;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint12")||(this.id == "waypoint6")) && (fromCounter == "waypoint8")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint12")){
+            totalScore = totalScore + scoreLine14;
+            }
+            if((toCounter == "waypoint6")){
+            totalScore = totalScore + scoreLine9;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint7")||(this.id == "waypoint15")) && (fromCounter == "waypoint9")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint7")){
+            totalScore = totalScore + scoreLine10;
+            }
+            if((toCounter == "waypoint15")){
+            totalScore = totalScore + scoreLine11;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint12")||(this.id == "waypoint15")||(this.id == "waypoint14")) && (fromCounter == "waypoint10")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint12")){
+            totalScore = totalScore + scoreLine15;
+            }
+            if((toCounter == "waypoint15")){
+            totalScore = totalScore + scoreLine12;
+            }
+            if((toCounter == "waypoint14")){
+            totalScore = totalScore + scoreLine16;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint13")||(this.id == "waypoint4")) && (fromCounter == "waypoint11")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint13")){
+            totalScore = totalScore + scoreLine17;
+            }
+            if((toCounter == "waypoint4")){
+            totalScore = totalScore + scoreLine13;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint8")||(this.id == "waypoint10")) && (fromCounter == "waypoint12")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint8")){
+            totalScore = totalScore + scoreLine14;
+            }
+            if((toCounter == "waypoint10")){
+            totalScore = totalScore + scoreLine15;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        } 
+        if(((this.id == "waypoint14")||(this.id == "waypoint11")||(this.id == "waypoint5")) && (fromCounter == "waypoint13")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint14")){
+            totalScore = totalScore + scoreLine19;
+            }
+            if((toCounter == "waypoint11")){
+            totalScore = totalScore + scoreLine13;
+            }
+            if((toCounter == "waypoint5")){
+            totalScore = totalScore + scoreLine18;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint10")||(this.id == "waypoint13")) && (fromCounter == "waypoint14")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint10")){
+            totalScore = totalScore + scoreLine16;
+            }
+            if((toCounter == "waypoint17")){
+            totalScore = totalScore + scoreLine19;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint10")||(this.id == "waypoint9")) && (fromCounter == "waypoint15")){
+           
+            toCounter = this.id;
+            if((toCounter == "waypoint10")){
+            totalScore = totalScore + scoreLine12;
+            }
+            if((toCounter == "waypoint9")){
+            totalScore = totalScore + scoreLine11;
+            }
+            fromCounter = this.id;
+            alert(totalScore);       
+        }
+        if(((this.id == "waypoint1")||(this.id == "waypoint3")) && (fromCounter == "waypoint16")){     
+            toCounter = this.id;
+            if((toCounter == "waypoint1")){
+            totalScore = totalScore + scoreLine1;
+            }
+            if((toCounter == "waypoint3")){
+            totalScore = totalScore + scoreLine3;
+            }
+            fromCounter = this.id;
+            alert(totalScore);
+        } 
+      }
 
       $("circle.waypoint").click(clickCounter);
 
