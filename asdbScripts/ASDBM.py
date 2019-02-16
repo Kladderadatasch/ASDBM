@@ -3,19 +3,20 @@ import cx_Oracle
 import cgitb
 import numpy as np
 from jinja2 import Environment, FileSystemLoader
+import pandas as pd
+from pandas import DataFrame as df
 
 #Connection
-def dataHtml(fields = True, paths = False, maxXinput = 0, maxYinput = 0):
+def dataHtml(fields = True, paths = False, waypoints=False, score = False, maxXinput = 0, maxYinput = 0):
     #Exactly one value of True must be passed into this function
     with open('./db/dbpwd.txt','r') as file:
         pwd = file.readline().replace('\n','')
     conn = cx_Oracle.connect(pwd)
     c = conn.cursor()
     if fields == True:
-        c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM S1893502.PFIELDS")
+        c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS")
         list = []
         dict = {'FieldID':[],'LowX':[],'LowY':[],'HiX':[],'HiY':[], 'MaxCoordX':[],'MaxCoordY':[]}
-        replace = ['Owner','Crop']
         for row in c:
             list.append(row)
 
@@ -50,7 +51,7 @@ def dataHtml(fields = True, paths = False, maxXinput = 0, maxYinput = 0):
 ###############################################################################################################################
 
     if paths == True:
-        c.execute("SELECT PATH_ID, STARTX, STARTY, ENDX, ENDY FROM S1893502.PATHS")
+        c.execute("SELECT PATH_ID, STARTX, STARTY, ENDX, ENDY FROM PATHS")
         listpath = []
         dictpath = {'PathID':[],'StartX':[],'StartY':[],'EndX':[],'EndY':[], 'MaxCoordX':[],'MaxCoordY':[], 'Distance':[]}
         for row in c:
@@ -81,6 +82,78 @@ def dataHtml(fields = True, paths = False, maxXinput = 0, maxYinput = 0):
             dictpath['EndY'][row]= (1-(dictpath['EndY'][row]/maximumY))*100
 
         return dictpath
+
+#############################################################################
+##############################################################################
+###############################################################################
+
+    if waypoints == True:
+        c.execute('''
+SELECT A.PATH_ID, B.POINT_ID AS "START_POINT_ID",
+C.POINT_ID AS "END_POINT_ID", B.S_X, B.S_Y, C.S_X AS "E_X", C.S_Y AS "E_Y"
+FROM PATHS A, PSTART B, PEND C WHERE A.PATH_ID = B.PATH_ID AND
+A.PATH_ID = C.PATH_ID ORDER BY A.PATH_ID
+''')
+        listpoint = []
+        dictpoint = {'PathID':[],'StartPointID':[],'EndPointID':[], 'StartX':[],'StartY':[],'EndX':[],'EndY':[]}
+        for row in c:
+            listpoint.append(row)
+
+#Appending
+        for row in range(len(listpoint)):
+            dictpoint['PathID'].append(listpoint[row][0])
+            dictpoint['StartPointID'].append(listpoint[row][1])
+            dictpoint['EndPointID'].append(listpoint[row][2])
+            dictpoint['StartX'].append(listpoint[row][3])
+            dictpoint['StartY'].append(listpoint[row][4])
+            dictpoint['EndX'].append(listpoint[row][5])
+            dictpoint['EndY'].append(listpoint[row][6])
+
+    #Relativating Coordinates
+    #This could be a big problem with the maximum and relativeness
+        maxX = maxXinput
+        maxY = maxYinput
+
+        for row in range(len(listpoint)):
+            dictpoint['StartX'][row]= ((dictpoint['StartX'][row]/maxX))*100
+            dictpoint['StartY'][row]= (1-(dictpoint['StartY'][row]/maxY))*100
+            dictpoint['EndX'][row]= ((dictpoint['EndX'][row]/maxX))*100
+            dictpoint['EndY'][row]= (1-(dictpoint['EndY'][row]/maxY))*100
+
+        return dictpoint
+
+############################################################################
+#############################################################################
+##############################################################################
+
+
+    if score == True:
+        c.execute('''SELECT A.PATH_ID, C.FIELD_ID, SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) \
+AS "DISTANCE", C.GROUND_ID, D.SCORE_INFL AS "GROUNDMULTIPLIER", SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO)*D.SCORE_INFL AS "SCORE" \
+FROM PATHS A, PFIELDS C, USER_SDO_GEOM_METADATA M, GROUND D WHERE M.TABLE_NAME = 'PATHS' AND M.COLUMN_NAME = 'GEOM' AND SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) > 0 AND C.GROUND_ID = D.GROUND_ID ORDER BY A.PATH_ID''')
+
+        listscore = []
+        dictscore = {'PathID':[],'FieldID':[],'Distance':[],'GroundID':[],'GroundMultiplier':[],'Score':[]}
+        for row in c:
+            listscore.append(row)
+
+#Appending
+        for row in range(len(listscore)):
+            dictscore['PathID'].append(listscore[row][0])
+            dictscore['FieldID'].append(listscore[row][1])
+            dictscore['Distance'].append(listscore[row][2])
+            dictscore['GroundID'].append(listscore[row][3])
+            dictscore['GroundMultiplier'].append(listscore[row][4])
+            dictscore['Score'].append(listscore[row][5])
+
+    #####Insert here a new dict which joins the values of the scores together
+        sumscore = {'PathID':[], 'Score':[]}
+        sumscore['PathID'] = dictscore['PathID']
+        sumscore['Score'] = dictscore['Score']
+        dfscore = df(sumscore).groupby(['PathID']).sum().to_dict()['Score']
+            
+        return dfscore
+
 
 
 #####
@@ -117,9 +190,10 @@ def dataHtmlsq(pathsSQ = True):
 def print_html():
     env = Environment(loader = FileSystemLoader('../'))
     temp = env.get_template('SVG.html')
-    maxXfields, maxYfields, fields = dataHtml(fields = True, paths = False)
-    paths = dataHtml(fields = False, paths = True, maxXinput = maxXfields, maxYinput = maxYfields)
-
+    maxXfields, maxYfields, fields = dataHtml(fields = True, paths = False,score = False, waypoints = False)
+    paths = dataHtml(fields = False, paths = True, waypoints = False,score = False, maxXinput = maxXfields, maxYinput = maxYfields)
+    points= dataHtml(fields = False, paths = False, waypoints = True,score = False, maxXinput = maxXfields, maxYinput = maxYfields)
+    scoredic = dataHtml(fields = False, paths = False, waypoints = False,score = True, maxXinput = maxXfields, maxYinput = maxYfields)
 
     print('''Content-Type: text/html\n\n\
 <!DOCTYPE html>\n\
@@ -252,9 +326,17 @@ fill: #'''+str(colorramp[row+np.random.randint(low = 0, high = 50)])+''';}\n''')
 
     '''Waypoint Computing'''
     print('''<g class="Waypoints">''')
-    print('''<circle cx="'''+str(paths['EndX'][1])+'''" \
-cy="'''+str(paths['EndY'][1])+'''" r="1.5" stroke="black" \
-stroke-width="0.5" fill="red" id="waypoint1" class="counter_test" />''')
+
+    for row in range(len(points['PathID'])):
+
+        print('''<circle cx="'''+str(points['StartX'][row])+'''" \
+cy="'''+str(points['StartY'][row])+'''" r="1.5" stroke="black" \
+stroke-width="0.5" fill="red" id="waypoint_start_'''+str(row)+'''" class="waypoint" />''')
+
+        print('''<circle cx="'''+str(points['EndX'][row])+'''" \
+cy="'''+str(points['EndY'][row])+'''" r="1.5" stroke="black" \
+stroke-width="0.5" fill="red" id="waypoint_end_'''+str(row)+'''" class="waypoint" />''')
+
     print('''</g>''')
 
     #print('''<g class = "AJAX"><text id="demo" class="field_id_text x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" onclick="loadDoc()">Test</text></g>\n''')
@@ -262,43 +344,49 @@ stroke-width="0.5" fill="red" id="waypoint1" class="counter_test" />''')
     #print('''<text id="demo" x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" class="field_id_text" onclick="loadDoc()">Test</text>''' )
 
     print('''</svg>''')
-
+    
     print('''\n\
 <script>
 //insert Event Listener for Classes \n\
 //if Statements in this function \n\
 
-      var totalScore = 100;
-      var scoreLine0 = -15;
-      var scoreLine1 = -20;
-      var scoreLine2 = -30;
-      var scoreLine3 = -28;
-      // var testScore = totalScore + scoreLine0
+    var totalScore = 100;\n''')
+          
+    for row in range(len(scoredic)):
+        index = row+1
+        print('''var scoreLine'''+str(index)+'''= '''+str(-1*(scoredic[index]))+'''\n''')
+      
 
-      var pointReference0 = [document.getElementById("waypoint0"),scoreLine0,scoreLine1];
-      var pointReference1 = [document.getElementById("waypoint1"),scoreLine1,scoreLine2];
-      var pointReference2 = [document.getElementById("waypoint2"),scoreLine1,scoreLine3];
-
-      var fromCounter = pointReference0;
+    print('''
+    
+      var pointReference0 = ;
+      
+      var fromCounter = "waypoint0";
       var toCounter = null;
-
-      function clickCounter() {
+       
         // set onlick the clicked pointReference as \n\
         // toCounter if the point is connected \n\
         // by a line from the fromCounter \n\
-
         // also how to resctrict the paths where it's possible to go ---- && !()
+        //
+      function clickCounter() {
 
-        if((this.id == "waypoint1") && !(fromCounter == pointReference1)){
-            var toCounter = pointReference1;
-            if ((fromCounter == pointReference0) && (toCounter == pointReference1)){
-                totalScore = totalScore + scoreLine0 + scoreLine1;
-                alert(totalScore);
+        if(((this.id == "waypoint1")||(this.id == "waypoint2")) && (fromCounter == "waypoint0")){
+            var toCounter = this.id;
+            
+            //if(this.id == "waypoint1"){
+            //totalScore = totalScore + scoreLine1;
+            //}
+            
+           // if(this.id == "waypoint2"){
+            //totalScore = totalScore + scoreLine2
+            //}           
             }
+         alert(totalScore);
         }
-      }
+      
 
-      $("circle.counter_test").click(clickCounter);
+      $("circle.waypoint").click(clickCounter);
 
 </script></body>\n</html>''')
 

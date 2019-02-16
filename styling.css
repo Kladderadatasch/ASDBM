@@ -31,29 +31,15 @@ opacity: 0.45;
   stroke-width: 1px;
 }
 
-.counter_test{
+.waypoint{
   opacity: 0.6;
 }
-.counter_test:hover{
-  cursor:grab;
+.waypoint:hover{
+  cursor:pointer;
 }
 
 .fields:hover {
     opacity: 0.95;
-    cursor: pointer;
-}
-
-.finds {
-  fill: gold;
-  opacity: 0.8;
-  stroke-width: 0.2;
-  stroke-opacity: 0.4;
-  stroke:black;
-}
-
-.finds:hover {
-  opacity: 1;
-  cursor: pointer;
 }
 
 .legendtext {
