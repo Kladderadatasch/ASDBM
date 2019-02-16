@@ -59,14 +59,14 @@ INSERT INTO PEND VALUES(
   7
 );
 INSERT INTO PEND VALUES(
-  11,
-  11,
-  9,
-  8,
+  20,
+  2,
+  23,
+  1,
   MYSDS.SDO_GEOMETRY(
       2001,
       NULL,
-      SDO_POINT_TYPE(9, 8, NULL),
+      SDO_POINT_TYPE(2, 23, NULL),
       NULL,
       NULL)
 );
