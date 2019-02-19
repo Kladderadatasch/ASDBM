@@ -1,0 +1,94 @@
+SQL> DESCRIBE PEND
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ POINT_ID                                                                                                          NOT NULL NUMBER(2)
+ PATH_ID                                                                                                           NOT NULL NUMBER
+ S_X                                                                                                               NOT NULL NUMBER(2)
+ S_Y                                                                                                               NOT NULL NUMBER(2)
+ GEOM                                                                                                                       MDSYS.SDO_GEOMETRY
+
+SQL> SET LINESIZE 100
+SQL> DESCRIBE PEND
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ------------------------------------
+ POINT_ID                                              NOT NULL NUMBER(2)
+ PATH_ID                                               NOT NULL NUMBER
+ S_X                                                   NOT NULL NUMBER(2)
+ S_Y                                                   NOT NULL NUMBER(2)
+ GEOM                                                           MDSYS.SDO_GEOMETRY
+
+SQL> SET LINESIZE 50
+SQL> DESCRIBE PEND
+ Name                    Null?    Type
+ ----------------------- -------- ----------------
+ POINT_ID                NOT NULL NUMBER(2)
+ PATH_ID                 NOT NULL NUMBER
+ S_X                     NOT NULL NUMBER(2)
+ S_Y                     NOT NULL NUMBER(2)
+ GEOM                             MDSYS.SDO_GEOMET
+                                  RY
+
+SQL> SET LINESIZE 80
+SQL> DESCRIBE PEND
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ POINT_ID                                  NOT NULL NUMBER(2)
+ PATH_ID                                   NOT NULL NUMBER
+ S_X                                       NOT NULL NUMBER(2)
+ S_Y                                       NOT NULL NUMBER(2)
+ GEOM                                               MDSYS.SDO_GEOMETRY
+
+SQL> DESCRIBE PFIELDS
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FIELD_ID                                  NOT NULL NUMBER
+ LOWX                                      NOT NULL NUMBER(2)
+ LOWY                                      NOT NULL NUMBER(2)
+ HIX                                       NOT NULL NUMBER(2)
+ HIY                                       NOT NULL NUMBER(2)
+ MAP                                       NOT NULL NUMBER
+ GROUND_ID                                 NOT NULL NUMBER(1)
+ GEOM                                               MDSYS.SDO_GEOMETRY
+
+SQL> DESCRIBE GROUND
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ GROUND_ID                                 NOT NULL NUMBER
+ NAME                                      NOT NULL VARCHAR2(15)
+ SCORE_INFL                                NOT NULL NUMBER(3,2)
+
+SQL> DESCRIBE SLOPES
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SLOPE_ID                                  NOT NULL NUMBER(1)
+ SCORE_INFL                                NOT NULL NUMBER(3,2)
+ VALUE                                              NUMBER(3)
+ GEOM                                               MDSYS.SDO_GEOMETRY
+
+SQL> DESCRIBE PATHS
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PATH_ID                                   NOT NULL NUMBER
+ STARTX                                    NOT NULL NUMBER(2)
+ STARTY                                    NOT NULL NUMBER(2)
+ ENDX                                      NOT NULL NUMBER(2)
+ ENDY                                      NOT NULL NUMBER(2)
+ GEOM                                               MDSYS.SDO_GEOMETRY
+
+SQL> DESCRIBE BOOTS
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BOOT_ID                                   NOT NULL NUMBER(1)
+ NAME                                      NOT NULL VARCHAR2(20)
+ SCORE_INFL                                NOT NULL NUMBER(3,2)
+
+SQL> DESCRIBE SCORE
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SCORE_ID                                  NOT NULL NUMBER(2)
+ PLAYER                                    NOT NULL VARCHAR2(15)
+ SCORE                                     NOT NULL NUMBER(7,2)
+ DISTANCE                                  NOT NULL NUMBER(10)
+ BOOTS                                     NOT NULL NUMBER(1)
+
+SQL> SPOOL OFF
