@@ -1,0 +1,49 @@
+SQL> SELECT * FROM SPAWN;
+
+  SPAWN_ID          X          Y    TYPE_ID GEOM(SDO_GTYPE, SDO_SRID, SDO_POINT(X, Y, Z), SDO_ELEM_INFO, SDO_ORDINATES)                                                        
+---------- ---------- ---------- ---------- --------------------------------------------------------------------------------                                                   
+         1          2         23          1 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(2, 23, NULL), NULL, NULL)                                                                  
+         2         18          2          2 SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(18, 2, NULL), NULL, NULL)                                                                  
+
+SQL> DESCRIBE SPAWN
+ Name                                                                                               Null?    Type
+ -------------------------------------------------------------------------------------------------- -------- ------------------------------------------------------------------
+ SPAWN_ID                                                                                           NOT NULL NUMBER
+ X                                                                                                  NOT NULL NUMBER(2)
+ Y                                                                                                  NOT NULL NUMBER(2)
+ TYPE_ID                                                                                            NOT NULL NUMBER(1)
+ GEOM                                                                                                        MDSYS.SDO_GEOMETRY
+
+SQL> SET LINESIZE 50
+SQL> DESCRIBE SPAWN
+ Name                    Null?    Type
+ ----------------------- -------- ----------------
+ SPAWN_ID                NOT NULL NUMBER
+ X                       NOT NULL NUMBER(2)
+ Y                       NOT NULL NUMBER(2)
+ TYPE_ID                 NOT NULL NUMBER(1)
+ GEOM                             MDSYS.SDO_GEOMET
+                                  RY
+
+SQL> COLUMN NAME FORMAT A10
+SQL> DESCRIBE SPAWN
+ Name                    Null?    Type
+ ----------------------- -------- ----------------
+ SPAWN_ID                NOT NULL NUMBER
+ X                       NOT NULL NUMBER(2)
+ Y                       NOT NULL NUMBER(2)
+ TYPE_ID                 NOT NULL NUMBER(1)
+ GEOM                             MDSYS.SDO_GEOMET
+                                  RY
+
+SQL> SET LINESIZE 55
+SQL> DESCRIBE SPAWN
+ Name                       Null?    Type
+ -------------------------- -------- ------------------
+ SPAWN_ID                   NOT NULL NUMBER
+ X                          NOT NULL NUMBER(2)
+ Y                          NOT NULL NUMBER(2)
+ TYPE_ID                    NOT NULL NUMBER(1)
+ GEOM                                MDSYS.SDO_GEOMETRY
+
+SQL> SPOOL OFF

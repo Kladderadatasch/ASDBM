@@ -21,7 +21,7 @@ class getData():
         self.maxX = maxXinput
         self.maxY = maxYinput
         # TIL Changed
-        self.rand_int = random.radint(1,1)
+        self.rand_int = random.radint(1,2)
 
     def fields(self):
             # TIL Changed
@@ -160,9 +160,16 @@ class getData():
     ##############################################################################
 
     def score(self):
-            self.c.execute('''SELECT A.PATH_ID, C.FIELD_ID, SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) \
+            if self.rand_int == 1:
+                self.c.execute('''SELECT A.PATH_ID, C.FIELD_ID, SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) \
     AS "DISTANCE", C.GROUND_ID, D.SCORE_INFL AS "GROUNDMULTIPLIER", SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO)*D.SCORE_INFL AS "SCORE" \
     FROM PATHS A, PFIELDS C, USER_SDO_GEOM_METADATA M, GROUND D WHERE M.TABLE_NAME = 'PATHS' AND M.COLUMN_NAME = 'GEOM' AND SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) > 0 AND C.GROUND_ID = D.GROUND_ID ORDER BY A.PATH_ID''')
+            else:
+                self.c.execute('''SELECT A.PATH_ID, C.FIELD_ID, SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) \
+    AS "DISTANCE", C.GROUND_ID, D.SCORE_INFL AS "GROUNDMULTIPLIER", SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO)*D.SCORE_INFL AS "SCORE" \
+    FROM PATHS A, PFIELDS2 C, USER_SDO_GEOM_METADATA M, GROUND D WHERE M.TABLE_NAME = 'PATHS' AND M.COLUMN_NAME = 'GEOM' AND SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) > 0 AND C.GROUND_ID = D.GROUND_ID ORDER BY A.PATH_ID''')
+
+
 
             listscore = []
             dictscore = {'PathID':[],'FieldID':[],'Distance':[],'GroundID':[],'GroundMultiplier':[],'Score':[]}
@@ -214,8 +221,12 @@ class getData():
             dictgrounds['Name'].append(listgrounds[row][1])
             dictgrounds['GroundInfluence'].append(listgrounds[row][2])
 
-        self.c.execute('''
+        if self.rand_int == 1:
+            self.c.execute('''
 SELECT FIELD_ID, GROUND_ID FROM PFIELDS ORDER BY FIELD_ID ''')
+        else:
+            self.c.execute('''
+SELECT FIELD_ID, GROUND_ID FROM PFIELDS2 ORDER BY FIELD_ID ''')
         listgrounds = []
         dictgroundfields = {'FieldID':[],'GroundID':[]}
         for row in self.c:
