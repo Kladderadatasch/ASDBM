@@ -16,14 +16,15 @@ class getData():
         conn = cx_Oracle.connect(pwd)
         pwd = None
         self.c = conn.cursor()
+        self.rand_int = random.randint(1,2)
         self.maxXinput, self.maxYinput, temp = getData.fields(self)
         temp = None
         self.maxX = maxXinput
         self.maxY = maxYinput
-
-        self.rand_int = random.radint(1,1)
+        
 
     def fields(self):
+            
             if self.rand_int == 1:
                 self.c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS")
             else:
