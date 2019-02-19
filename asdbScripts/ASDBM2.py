@@ -8,7 +8,7 @@ from pandas import DataFrame as df
 import random
 
 class getData():
-
+    
     def __init__(self,maxXinput = 0, maxYinput = 0):
         #Exactly one value of True must be passed into this function
         with open('./db/dbpwd.txt','r') as file:
@@ -16,16 +16,15 @@ class getData():
         conn = cx_Oracle.connect(pwd)
         pwd = None
         self.c = conn.cursor()
+        self.rand_int = random.randint(1,2)
         self.maxXinput, self.maxYinput, temp = getData.fields(self)
         temp = None
         self.maxX = maxXinput
         self.maxY = maxYinput
-        # TIL Changed
-        self.rand_int = random.radint(1,1)
+        
 
     def fields(self):
-            # TIL Changed
-            # self.c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS")
+            
             if self.rand_int == 1:
                 self.c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS")
             else:
@@ -35,7 +34,7 @@ class getData():
             dict = {'FieldID':[],'LowX':[],'LowY':[],'HiX':[],'HiY':[], 'MaxCoordX':[],'MaxCoordY':[]}
             for row in self.c:
                 list.append(row)
-
+    
     #Appending
             for row in range(len(list)):
                 dict['FieldID'].append(list[row][0])
@@ -43,36 +42,36 @@ class getData():
                 dict['LowY'].append(list[row][2])
                 dict['HiX'].append(list[row][3])
                 dict['HiY'].append(list[row][4])
-
+    
         #Relativating Coordinates
             maxX = max(dict['HiX'])
             maxY = max(dict['HiY'])
-
+    
             dict['MaxCoordX'].append(maxX)
             maximumX = maxX
             dict['MaxCoordY'].append(maxY)
             maximumY = maxY
-
+    
             for row in range(len(list)):
                 dict['LowX'][row]= ((dict['LowX'][row]/maximumX))*100
                 dict['LowY'][row]= (1-(dict['LowY'][row]/maximumY))*100
                 dict['HiX'][row]= ((dict['HiX'][row]/maximumX))*100
                 dict['HiY'][row]= (1-(dict['HiY'][row]/maximumY))*100
-
+    
             return maxX, maxY, dict
-
-
+    
+    
     ###################################################################################################################################
     #################################################################################################################################
     ###############################################################################################################################
-
+    
     def paths(self):
             self.c.execute("SELECT PATH_ID, STARTX, STARTY, ENDX, ENDY FROM PATHS")
             listpath = []
             dictpath = {'PathID':[],'StartX':[],'StartY':[],'EndX':[],'EndY':[], 'MaxCoordX':[],'MaxCoordY':[], 'Distance':[]}
             for row in self.c:
                 listpath.append(row)
-
+    
     #Appending
             for row in range(len(listpath)):
                 dictpath['PathID'].append(listpath[row][0])
@@ -80,7 +79,7 @@ class getData():
                 dictpath['StartY'].append(listpath[row][2])
                 dictpath['EndX'].append(listpath[row][3])
                 dictpath['EndY'].append(listpath[row][4])
-
+    
         #Relativating Coordinates
         #This could be a big problem with the maximum and relativeness
             maxX = self.maxXinput
@@ -90,19 +89,19 @@ class getData():
             maximumX = maxX
             dictpath['MaxCoordY'].append(maxY)
             maximumY = maxY
-
+    
             for row in range(len(listpath)):
                 dictpath['StartX'][row]= ((dictpath['StartX'][row]/maximumX))*100
                 dictpath['StartY'][row]= (1-(dictpath['StartY'][row]/maximumY))*100
                 dictpath['EndX'][row]= ((dictpath['EndX'][row]/maximumX))*100
                 dictpath['EndY'][row]= (1-(dictpath['EndY'][row]/maximumY))*100
-
+    
             return dictpath
-
+    
     #############################################################################
     ##############################################################################
     ###############################################################################
-
+    
     def waypointcoords(self):
             self.c.execute('''
     SELECT POINT_ID, S_X, S_Y FROM PEND
@@ -111,64 +110,64 @@ class getData():
             dictpoint = {'PointID':[],'X':[],'Y':[]}
             for row in self.c:
                 listpoint.append(row)
-
+    
     #Appending
             for row in range(len(listpoint)):
                 dictpoint['PointID'].append(listpoint[row][0])
                 dictpoint['X'].append(listpoint[row][1])
                 dictpoint['Y'].append(listpoint[row][2])
-
+                
         #Relativating Coordinates
-        #This could be a big problem with the maximum and relativeness
+       
             maxX = self.maxXinput
             maxY = self.maxYinput
-
+    
             for row in range(len(listpoint)):
                 dictpoint['X'][row]= ((dictpoint['X'][row]/maxX))*100
                 dictpoint['Y'][row]= (1-(dictpoint['Y'][row]/maxY))*100
-
+    
             return dictpoint
-
+    
     ############################################################################
     #############################################################################
     ##############################################################################
-
+    
     def waypointrefs(self):
             self.c.execute('''
     SELECT C.PATH_ID, D.POINT_ID, E.POINT_ID
     FROM PATHS C, PEND D, PEND E
     WHERE SDO_TOUCH(C.GEOM, D.GEOM) = 'TRUE' AND SDO_TOUCH(C.GEOM, E.GEOM) = 'TRUE'
     AND D.POINT_ID < E.POINT_ID
-    ORDER BY C.PATH_ID
+    ORDER BY C.PATH_ID              
     ''')
             listpoint = []
             dictref = {'PathID':[],'PointID1':[],'PointID2':[]}
             for row in self.c:
                 listpoint.append(row)
-
+    
     #Appending
             for row in range(len(listpoint)):
                 dictref['PathID'].append(listpoint[row][0])
                 dictref['PointID1'].append(listpoint[row][1])
                 dictref['PointID2'].append(listpoint[row][2])
-
+            
             return dictref
-
-
+            
+            
     ##############################################################################
     #############################################################################
     ##############################################################################
-
+    
     def score(self):
             self.c.execute('''SELECT A.PATH_ID, C.FIELD_ID, SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) \
     AS "DISTANCE", C.GROUND_ID, D.SCORE_INFL AS "GROUNDMULTIPLIER", SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO)*D.SCORE_INFL AS "SCORE" \
     FROM PATHS A, PFIELDS C, USER_SDO_GEOM_METADATA M, GROUND D WHERE M.TABLE_NAME = 'PATHS' AND M.COLUMN_NAME = 'GEOM' AND SDO_GEOM.SDO_LENGTH(SDO_GEOM.SDO_INTERSECTION(A.GEOM, C.GEOM, 0.005), M.DIMINFO) > 0 AND C.GROUND_ID = D.GROUND_ID ORDER BY A.PATH_ID''')
-
+    
             listscore = []
             dictscore = {'PathID':[],'FieldID':[],'Distance':[],'GroundID':[],'GroundMultiplier':[],'Score':[]}
             for row in self.c:
                 listscore.append(row)
-
+                
             for row in range(len(listscore)):
                 dictscore['PathID'].append(listscore[row][0])
                 dictscore['FieldID'].append(listscore[row][1])
@@ -176,34 +175,34 @@ class getData():
                 dictscore['GroundID'].append(listscore[row][3])
                 dictscore['GroundMultiplier'].append(listscore[row][4])
                 dictscore['Score'].append(listscore[row][5])
-
+    
 #           Insert here a new dict which joins the values of the scores together
             sumscore = {'PathID':[], 'Score':[]}
             sumscore['PathID'] = dictscore['PathID']
             sumscore['Score'] = dictscore['Score']
-            dfscore = sumscore
+            dfscore = sumscore      
 #            Add the influence of slopes to belonging lines
-            slopes = getData.slopeadding()
+            slopes = getData.slopeadding(self)
             slopes['PathID'].pop(2)
-            slopes['ScoreInfluence'].pop(2)
+            slopes['ScoreInfluence'].pop(2) 
             for i in range(len(dfscore)):
                 for j in range(len(slopes)):
                     if slopes['PathID'][j] == dfscore['PathID'][i]:
                         dfscore['Score'][i] = dfscore['Score'][i] * slopes['ScoreInfluence'][i]
 
             dfscore = df(dfscore).groupby(['PathID']).sum().to_dict()['Score']
-
+            
             return dfscore
-
+    
     ##############################################################################
     #############################################################################
     ##############################################################################
-
+    
     def grounds(self):
         self.c.execute('''
-    SELECT * FROM GROUND
+    SELECT * FROM GROUND      
     ''')
-
+    
         listgrounds = []
         dictgrounds = {'GroundID':[],'Name':[],'GroundInfluence':[]}
         for row in self.c:
@@ -213,7 +212,7 @@ class getData():
             dictgrounds['GroundID'].append(listgrounds[row][0])
             dictgrounds['Name'].append(listgrounds[row][1])
             dictgrounds['GroundInfluence'].append(listgrounds[row][2])
-
+        
         self.c.execute('''
 SELECT FIELD_ID, GROUND_ID FROM PFIELDS ORDER BY FIELD_ID ''')
         listgrounds = []
@@ -223,7 +222,7 @@ SELECT FIELD_ID, GROUND_ID FROM PFIELDS ORDER BY FIELD_ID ''')
         for row in range(len(listgrounds)):
             dictgroundfields['FieldID'].append(listgrounds[row][0])
             dictgroundfields['GroundID'].append(listgrounds[row][1])
-
+                 
         return dictgrounds, dictgroundfields
 
 ##############################################################################
@@ -245,7 +244,7 @@ AND SDO_RELATE(A.GEOM, C.GEOM, 'mask=overlapbdydisjoint+inside') = 'TRUE' ORDER 
         for row in range(len(listslope)):
             dictslope['PathID'].append(listslope[row][0])
             dictslope['ScoreInfluence'].append(listslope[row][1])
-
+         
         return dictslope
 
 ################################################################################
@@ -261,19 +260,20 @@ def print_html():
     pointref = con.waypointrefs()
     scoredic = con.score()
     grounds, groundfields = con.grounds()
-
+  
 
     print('''Content-Type: text/html\n\n\
 <!DOCTYPE html>\n\
 <head>\n\
 <title> Turnipator the Game </title>\n\
 <link href="../styling.css" rel="stylesheet" type="text/css" >\n\
+<link href="../turnip_popup.css" rel="stylesheet" type="text/css" >\n\
 <style type="text/css" media="screen">\n''')
 
     '''Dynamic InLine CSS'''
 #   Add CSS above
     colorramp = ["443f3b","135111","77e874"]
-
+    
     for row in range(len(groundfields['FieldID'])):
         if groundfields['GroundID'][row] == 1:
             i = 0
@@ -284,14 +284,12 @@ def print_html():
         print('''#r'''+str(row)+''' {
 fill: #'''+str(colorramp[i])+''';}\n''')
 
-#<script src="../counter.js"></script>\n\
-#<script src="jQuery.js"></script>\n\
-
     print('''</style>\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n\
 </head>\n<body>''')
 
 
-    print('''<svg viewBox="-5 -4 110 110" xmlns="http://www.w3.org/2000/svg">\n\
+    print('''
+<div class = "colum left"><svg viewBox="-5 -4 110 110" xmlns="http://www.w3.org/2000/svg" class = "svg">\n\
 <g class="grid">''')
 
     '''Grid Labelling'''
@@ -388,40 +386,96 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
 ''')
 
     print('''</g>''')
-
-    #print('''<g class = "AJAX"><text id="demo" class="field_id_text x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" onclick="loadDoc()">Test</text></g>\n''')
-
-    #print('''<text id="demo" x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" class="field_id_text" onclick="loadDoc()">Test</text>''' )
-
-    print('''</svg>''')
-
+    
+    '''The golden Turnip'''
+    print(''' <div id="popup_default" class="popup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <a href="#" class="close-popup" data-id="popup_default">&times;</a>
+    <h1>Popup 1</h1>
+    <img src="../the-golden-turnip.svg"></img>
+  </div>
+</div>
+''')
+    
+    
+    
+    print('''</svg></div><div class= "column right">''')
+    
     print('''\n\
 <script>
 //insert Event Listener for Classes \n\
 //if Statements in this function \n\
 
     var totalScore = 100;\n''')
-
+          
     for row in range(len(scoredic)):
         index = row+1
         print('''var scoreLine'''+str(index)+'''= '''+str(-1*(scoredic[index]))+'''\n''')
-
+      
 
     print('''
-
+     
       var fromCounter = "waypoint16";
       var toCounter = null;
-
-        // set onlick the clicked pointReference as \n\
-        // toCounter if the point is connected \n\
-        // by a line from the fromCounter \n\
-        // also how to resctrict the paths where it's possible to go ---- && !()
-        //
+      $("#waypoint16").attr({"r" : "3"});
+      $("#waypoint16").attr({"class" : "waypoint waypointpulse"});
+      $("circle.waypoint").click(clickCounter);
+     
+     
+        // jQuery extend functions for popup
+        
+    (function($) {
+      $.fn.openPopup = function( settings ) {
+        var elem = $(this);
+        // Establish our default settings
+        var settings = $.extend({
+          anim: 'fade'
+        }, settings);
+        elem.show();
+        elem.find('.popup-content').addClass(settings.anim+'In');
+      }
+      
+      $.fn.closePopup = function( settings ) {
+        var elem = $(this);
+        // Establish our default settings
+        var settings = $.extend({
+          anim: 'fade'
+        }, settings);
+        elem.find('.popup-content').removeClass(settings.anim+'In').addClass(settings.anim+'Out');
+        
+        setTimeout(function(){
+            elem.hide();
+            elem.find('.popup-content').removeClass(settings.anim+'Out')
+          }, 500);
+      }
+        
+    }(jQuery));
+    
+    // Click functions for popup
+    function openPopup(){
+      $('#'+$(this).data('id')).openPopup({
+        anim: (!$(this).attr('data-animation') || $(this).data('animation') == null) ? 'fade' : $(this).data('animation')
+      });
+    };
+    $('.close-popup').click(function(){
+      $('#'+$(this).data('id')).closePopup({
+        anim: (!$(this).attr('data-animation') || $(this).data('animation') == null) ? 'fade' : $(this).data('animation')
+      });
+    });
+    
+    
+    // Counter Function
+    
       function clickCounter() {
-
+        
+        $('#'+fromCounter).attr({"class" : "waypoint", "r" : "1.5"});           
         if(((this.id == "waypoint2")||(this.id == "waypoint4")||(this.id == "waypoint16")) && (fromCounter == "waypoint1")){
         //PointID2 20 - last one
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
+            
             if((toCounter == "waypoint2")){
             totalScore = totalScore + scoreLine2;
             }
@@ -432,11 +486,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine1;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint5")||(this.id == "waypoint1")) && (fromCounter == "waypoint2")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint5")){
             totalScore = totalScore + scoreLine5;
             }
@@ -444,11 +500,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine2;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint6")||(this.id == "waypoint7")||(this.id == "waypoint16")) && (fromCounter == "waypoint3")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint6")){
             totalScore = totalScore + scoreLine5;
             }
@@ -459,11 +517,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine2;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint7")||(this.id == "waypoint11")||(this.id == "waypoint1")) && (fromCounter == "waypoint4")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint7")){
             totalScore = totalScore + scoreLine8;
             }
@@ -474,11 +534,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine4;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint13")||(this.id == "waypoint2")) && (fromCounter == "waypoint5")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint13")){
             totalScore = totalScore + scoreLine18;
             }
@@ -487,11 +549,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             }
 
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint8")||(this.id == "waypoint3")) && (fromCounter == "waypoint6")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint8")){
             totalScore = totalScore + scoreLine9;
             }
@@ -500,11 +564,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             }
 
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint9")||(this.id == "waypoint3")||(this.id == "waypoint4")) && (fromCounter == "waypoint7")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint9")){
             totalScore = totalScore + scoreLine10;
             }
@@ -515,11 +581,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine8;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint12")||(this.id == "waypoint6")) && (fromCounter == "waypoint8")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint12")){
             totalScore = totalScore + scoreLine14;
             }
@@ -527,11 +595,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine9;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint7")||(this.id == "waypoint15")) && (fromCounter == "waypoint9")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint7")){
             totalScore = totalScore + scoreLine10;
             }
@@ -539,11 +609,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine11;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint12")||(this.id == "waypoint15")||(this.id == "waypoint14")) && (fromCounter == "waypoint10")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint12")){
             totalScore = totalScore + scoreLine15;
             }
@@ -552,13 +624,16 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             }
             if((toCounter == "waypoint14")){
             totalScore = totalScore + scoreLine16;
+            $('#waypoint14').click(openPopup()); 
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint13")||(this.id == "waypoint4")) && (fromCounter == "waypoint11")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint13")){
             totalScore = totalScore + scoreLine17;
             }
@@ -566,11 +641,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine13;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint8")||(this.id == "waypoint10")) && (fromCounter == "waypoint12")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint8")){
             totalScore = totalScore + scoreLine14;
             }
@@ -578,13 +655,16 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine15;
             }
             fromCounter = this.id;
-            alert(totalScore);
-        }
+            alert(totalScore);       
+        } 
         if(((this.id == "waypoint14")||(this.id == "waypoint11")||(this.id == "waypoint5")) && (fromCounter == "waypoint13")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint14")){
             totalScore = totalScore + scoreLine19;
+            $('#waypoint14').click(openPopup()); 
             }
             if((toCounter == "waypoint11")){
             totalScore = totalScore + scoreLine13;
@@ -593,11 +673,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine18;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint10")||(this.id == "waypoint13")) && (fromCounter == "waypoint14")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint10")){
             totalScore = totalScore + scoreLine16;
             }
@@ -605,11 +687,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine19;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
         if(((this.id == "waypoint10")||(this.id == "waypoint9")) && (fromCounter == "waypoint15")){
-
+           
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint10")){
             totalScore = totalScore + scoreLine12;
             }
@@ -617,10 +701,13 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             totalScore = totalScore + scoreLine11;
             }
             fromCounter = this.id;
-            alert(totalScore);
+            alert(totalScore);       
         }
-        if(((this.id == "waypoint1")||(this.id == "waypoint3")) && (fromCounter == "waypoint16")){
+        if(((this.id == "waypoint1")||(this.id == "waypoint3")) && (fromCounter == "waypoint16")){  
+        
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint1")){
             totalScore = totalScore + scoreLine1;
             }
@@ -629,11 +716,10 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             }
             fromCounter = this.id;
             alert(totalScore);
-        }
+        }     
       }
 
-      $("circle.waypoint").click(clickCounter);
-
+      
 </script></body>\n</html>''')
 
     # print('''function loadDoc() {\n\

@@ -5,6 +5,7 @@ import numpy as np
 from jinja2 import Environment, FileSystemLoader
 import pandas as pd
 from pandas import DataFrame as df
+import random
 
 class getData():
     
@@ -19,9 +20,15 @@ class getData():
         temp = None
         self.maxX = maxXinput
         self.maxY = maxYinput
-    
+
+        self.rand_int = random.radint(1,1)
+
     def fields(self):
-            self.c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS")
+            if self.rand_int == 1:
+                self.c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS")
+            else:
+                self.c.execute("SELECT FIELD_ID, LOWX, LOWY, HIX, HIY FROM PFIELDS2")
+
             list = []
             dict = {'FieldID':[],'LowX':[],'LowY':[],'HiX':[],'HiY':[], 'MaxCoordX':[],'MaxCoordY':[]}
             for row in self.c:
@@ -110,7 +117,7 @@ class getData():
                 dictpoint['Y'].append(listpoint[row][2])
                 
         #Relativating Coordinates
-        #This could be a big problem with the maximum and relativeness
+       
             maxX = self.maxXinput
             maxY = self.maxYinput
     
@@ -174,7 +181,7 @@ class getData():
             sumscore['Score'] = dictscore['Score']
             dfscore = sumscore      
 #            Add the influence of slopes to belonging lines
-            slopes = getData.slopeadding()
+            slopes = getData.slopeadding(self)
             slopes['PathID'].pop(2)
             slopes['ScoreInfluence'].pop(2) 
             for i in range(len(dfscore)):
@@ -259,6 +266,7 @@ def print_html():
 <head>\n\
 <title> Turnipator the Game </title>\n\
 <link href="../styling.css" rel="stylesheet" type="text/css" >\n\
+<link href="../turnip_popup.css" rel="stylesheet" type="text/css" >\n\
 <style type="text/css" media="screen">\n''')
 
     '''Dynamic InLine CSS'''
@@ -275,14 +283,12 @@ def print_html():
         print('''#r'''+str(row)+''' {
 fill: #'''+str(colorramp[i])+''';}\n''')
 
-#<script src="../counter.js"></script>\n\
-#<script src="jQuery.js"></script>\n\
-
     print('''</style>\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n\
 </head>\n<body>''')
 
 
-    print('''<svg viewBox="-5 -4 110 110" xmlns="http://www.w3.org/2000/svg">\n\
+    print('''
+<div class = "colum left"><svg viewBox="-5 -4 110 110" xmlns="http://www.w3.org/2000/svg" class = "svg">\n\
 <g class="grid">''')
 
     '''Grid Labelling'''
@@ -379,12 +385,21 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
 ''')
 
     print('''</g>''')
-
-    #print('''<g class = "AJAX"><text id="demo" class="field_id_text x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" onclick="loadDoc()">Test</text></g>\n''')
-
-    #print('''<text id="demo" x="'''+str((14/16)*100)+'''" y="'''+str((1/16)*100)+'''" class="field_id_text" onclick="loadDoc()">Test</text>''' )
-
-    print('''</svg>''')
+    
+    '''The golden Turnip'''
+    print(''' <div id="popup_default" class="popup">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    <a href="#" class="close-popup" data-id="popup_default">&times;</a>
+    <h1>Popup 1</h1>
+    <img src="../the-golden-turnip.svg"></img>
+  </div>
+</div>
+''')
+    
+    
+    
+    print('''</svg></div><div class= "column right">''')
     
     print('''\n\
 <script>
@@ -402,17 +417,64 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
      
       var fromCounter = "waypoint16";
       var toCounter = null;
-       
-        // set onlick the clicked pointReference as \n\
-        // toCounter if the point is connected \n\
-        // by a line from the fromCounter \n\
-        // also how to resctrict the paths where it's possible to go ---- && !()
-        //
+      $("#waypoint16").attr({"r" : "3"});
+      $("#waypoint16").attr({"class" : "waypoint waypointpulse"});
+      $("circle.waypoint").click(clickCounter);
+     
+     
+        // jQuery extend functions for popup
+        
+    (function($) {
+      $.fn.openPopup = function( settings ) {
+        var elem = $(this);
+        // Establish our default settings
+        var settings = $.extend({
+          anim: 'fade'
+        }, settings);
+        elem.show();
+        elem.find('.popup-content').addClass(settings.anim+'In');
+      }
+      
+      $.fn.closePopup = function( settings ) {
+        var elem = $(this);
+        // Establish our default settings
+        var settings = $.extend({
+          anim: 'fade'
+        }, settings);
+        elem.find('.popup-content').removeClass(settings.anim+'In').addClass(settings.anim+'Out');
+        
+        setTimeout(function(){
+            elem.hide();
+            elem.find('.popup-content').removeClass(settings.anim+'Out')
+          }, 500);
+      }
+        
+    }(jQuery));
+    
+    // Click functions for popup
+    function openPopup(){
+      $('#'+$(this).data('id')).openPopup({
+        anim: (!$(this).attr('data-animation') || $(this).data('animation') == null) ? 'fade' : $(this).data('animation')
+      });
+    };
+    $('.close-popup').click(function(){
+      $('#'+$(this).data('id')).closePopup({
+        anim: (!$(this).attr('data-animation') || $(this).data('animation') == null) ? 'fade' : $(this).data('animation')
+      });
+    });
+    
+    
+    // Counter Function
+    
       function clickCounter() {
-
+        
+        $('#'+fromCounter).attr({"class" : "waypoint", "r" : "1.5"});           
         if(((this.id == "waypoint2")||(this.id == "waypoint4")||(this.id == "waypoint16")) && (fromCounter == "waypoint1")){
         //PointID2 20 - last one
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
+            
             if((toCounter == "waypoint2")){
             totalScore = totalScore + scoreLine2;
             }
@@ -428,6 +490,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint5")||(this.id == "waypoint1")) && (fromCounter == "waypoint2")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint5")){
             totalScore = totalScore + scoreLine5;
             }
@@ -440,6 +504,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint6")||(this.id == "waypoint7")||(this.id == "waypoint16")) && (fromCounter == "waypoint3")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint6")){
             totalScore = totalScore + scoreLine5;
             }
@@ -455,6 +521,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint7")||(this.id == "waypoint11")||(this.id == "waypoint1")) && (fromCounter == "waypoint4")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint7")){
             totalScore = totalScore + scoreLine8;
             }
@@ -470,6 +538,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint13")||(this.id == "waypoint2")) && (fromCounter == "waypoint5")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint13")){
             totalScore = totalScore + scoreLine18;
             }
@@ -483,6 +553,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint8")||(this.id == "waypoint3")) && (fromCounter == "waypoint6")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint8")){
             totalScore = totalScore + scoreLine9;
             }
@@ -496,6 +568,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint9")||(this.id == "waypoint3")||(this.id == "waypoint4")) && (fromCounter == "waypoint7")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint9")){
             totalScore = totalScore + scoreLine10;
             }
@@ -511,6 +585,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint12")||(this.id == "waypoint6")) && (fromCounter == "waypoint8")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint12")){
             totalScore = totalScore + scoreLine14;
             }
@@ -523,6 +599,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint7")||(this.id == "waypoint15")) && (fromCounter == "waypoint9")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint7")){
             totalScore = totalScore + scoreLine10;
             }
@@ -535,6 +613,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint12")||(this.id == "waypoint15")||(this.id == "waypoint14")) && (fromCounter == "waypoint10")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint12")){
             totalScore = totalScore + scoreLine15;
             }
@@ -543,6 +623,7 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             }
             if((toCounter == "waypoint14")){
             totalScore = totalScore + scoreLine16;
+            $('#waypoint14').click(openPopup()); 
             }
             fromCounter = this.id;
             alert(totalScore);       
@@ -550,6 +631,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint13")||(this.id == "waypoint4")) && (fromCounter == "waypoint11")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint13")){
             totalScore = totalScore + scoreLine17;
             }
@@ -562,6 +645,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint8")||(this.id == "waypoint10")) && (fromCounter == "waypoint12")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint8")){
             totalScore = totalScore + scoreLine14;
             }
@@ -574,8 +659,11 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint14")||(this.id == "waypoint11")||(this.id == "waypoint5")) && (fromCounter == "waypoint13")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint14")){
             totalScore = totalScore + scoreLine19;
+            $('#waypoint14').click(openPopup()); 
             }
             if((toCounter == "waypoint11")){
             totalScore = totalScore + scoreLine13;
@@ -589,6 +677,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint10")||(this.id == "waypoint13")) && (fromCounter == "waypoint14")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint10")){
             totalScore = totalScore + scoreLine16;
             }
@@ -601,6 +691,8 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         if(((this.id == "waypoint10")||(this.id == "waypoint9")) && (fromCounter == "waypoint15")){
            
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint10")){
             totalScore = totalScore + scoreLine12;
             }
@@ -610,8 +702,11 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
             fromCounter = this.id;
             alert(totalScore);       
         }
-        if(((this.id == "waypoint1")||(this.id == "waypoint3")) && (fromCounter == "waypoint16")){     
+        if(((this.id == "waypoint1")||(this.id == "waypoint3")) && (fromCounter == "waypoint16")){  
+        
             toCounter = this.id;
+            $(this).attr({"r" : "3"});
+            $(this).attr({"class" : "waypoint waypointpulse"});
             if((toCounter == "waypoint1")){
             totalScore = totalScore + scoreLine1;
             }
@@ -623,8 +718,7 @@ stroke-width="0.5" fill="red" id="waypoint'''+str(row + 1)+'''" class="waypoint"
         }     
       }
 
-      $("circle.waypoint").click(clickCounter);
-
+      
 </script></body>\n</html>''')
 
     # print('''function loadDoc() {\n\
